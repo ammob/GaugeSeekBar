@@ -3,7 +3,7 @@ package com.tenclouds.gaugeseekbar
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
 import android.support.annotation.DimenRes
@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+
 
 class GaugeSeekBar : View {
 
@@ -242,8 +243,8 @@ class GaugeSeekBar : View {
         }
 
         if (showThumb) {
-            val b = if (thumbDrawableId != 0) BitmapFactory.decodeResource(context.getResources(), thumbDrawableId) else null
-            val thumbDrawable = ThumbDrawable(thumbColor, thumbOuterColor, b)
+            val bitmap = getBitmapFromVectorDrawable(context, thumbDrawableId)
+            val thumbDrawable = ThumbDrawable(thumbColor, thumbOuterColor, bitmap)
             thumbEntity = ThumbEntity(centerPosition, progress, startAngle, thumbRadius, thumbDrawable)
         }
     }
@@ -253,6 +254,17 @@ class GaugeSeekBar : View {
             trackDrawable?.draw(this)
             progressDrawable?.draw(this, progress)
             thumbEntity?.draw(canvas, progress)
+        }
+    }
+
+    private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
+        val drawable = if (drawableId != 0) ContextCompat.getDrawable(context, drawableId) else null
+        return drawable?.let {
+            val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            drawable.setBounds(0, 0, canvas.width, canvas.height)
+            drawable.draw(canvas)
+            bitmap
         }
     }
 }
