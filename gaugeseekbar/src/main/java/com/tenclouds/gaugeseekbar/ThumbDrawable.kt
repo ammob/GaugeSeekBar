@@ -14,8 +14,8 @@ class ThumbDrawable(thumbColor: Int) : Drawable() {
 
     private val thumbOuterPaint = Paint().apply {
         isAntiAlias = true
-        color = thumbColor
-        alpha = 102
+        color = Color.WHITE
+//        alpha = 102
     }
 
     private val thumbInnerPaint = Paint().apply {
@@ -30,8 +30,8 @@ class ThumbDrawable(thumbColor: Int) : Drawable() {
 
         canvas.apply {
             drawCircle(centerX, centerY, radius, thumbOuterPaint)
-            drawCircle(centerX, centerY, radius / 2f, thumbInnerPaint)
-            drawCircle(centerX, centerY, 3f, whitePaint)
+            drawCircle(centerX, centerY, radius * 3 / 4f, thumbInnerPaint)
+//            drawCircle(centerX, centerY, 3f, whitePaint)
         }
     }
 
