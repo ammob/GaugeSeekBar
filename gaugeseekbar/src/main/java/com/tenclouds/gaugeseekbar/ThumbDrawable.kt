@@ -3,7 +3,7 @@ package com.tenclouds.gaugeseekbar
 import android.graphics.*
 import android.graphics.drawable.Drawable
 
-class ThumbDrawable(thumbColor: Int, thumbOuterColor: Int) : Drawable() {
+class ThumbDrawable(thumbColor: Int, thumbOuterColor: Int, val thumbBitmap: Bitmap? = null) : Drawable() {
 
     private val whitePaint = Paint().apply {
         color = Color.WHITE
@@ -27,11 +27,13 @@ class ThumbDrawable(thumbColor: Int, thumbOuterColor: Int) : Drawable() {
         val centerX = bounds.exactCenterX()
         val centerY = bounds.exactCenterY()
         val radius = centerX - bounds.left
-
         canvas.apply {
             drawCircle(centerX, centerY, radius, thumbOuterPaint)
             drawCircle(centerX, centerY, radius * 3 / 4f, thumbInnerPaint)
 //            drawCircle(centerX, centerY, 3f, whitePaint)
+            thumbBitmap?.let {
+                drawBitmap(it, centerX - it.width / 2, centerY - it.height / 2, whitePaint)
+            }
         }
     }
 

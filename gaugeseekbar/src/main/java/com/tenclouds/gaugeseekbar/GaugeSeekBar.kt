@@ -3,6 +3,7 @@ package com.tenclouds.gaugeseekbar
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.PointF
 import android.support.annotation.DimenRes
@@ -241,7 +242,8 @@ class GaugeSeekBar : View {
         }
 
         if (showThumb) {
-            val thumbDrawable = if (thumbDrawableId != 0) ContextCompat.getDrawable(context, thumbDrawableId)!! else ThumbDrawable(thumbColor, thumbOuterColor)
+            val b = if (thumbDrawableId != 0) BitmapFactory.decodeResource(context.getResources(), thumbDrawableId) else null
+            val thumbDrawable = ThumbDrawable(thumbColor, thumbOuterColor, b)
             thumbEntity = ThumbEntity(centerPosition, progress, startAngle, thumbRadius, thumbDrawable)
         }
     }
