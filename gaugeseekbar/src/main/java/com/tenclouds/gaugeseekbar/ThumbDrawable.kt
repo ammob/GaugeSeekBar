@@ -3,7 +3,7 @@ package com.tenclouds.gaugeseekbar
 import android.graphics.*
 import android.graphics.drawable.Drawable
 
-class ThumbDrawable(thumbColor: Int) : Drawable() {
+class ThumbDrawable(thumbColor: Int, thumbOuterColor: Int) : Drawable() {
 
     private val whitePaint = Paint().apply {
         color = Color.WHITE
@@ -14,7 +14,7 @@ class ThumbDrawable(thumbColor: Int) : Drawable() {
 
     private val thumbOuterPaint = Paint().apply {
         isAntiAlias = true
-        color = Color.WHITE
+        color = thumbOuterColor
 //        alpha = 102
     }
 

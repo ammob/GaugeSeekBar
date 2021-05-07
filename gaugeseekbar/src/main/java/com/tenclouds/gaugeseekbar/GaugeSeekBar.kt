@@ -36,6 +36,7 @@ class GaugeSeekBar : View {
     private var progressGradientArray = context.resources.getIntArray(R.array.default_index_gradient)
     private var progressGradientArrayPositions: FloatArray? = null
     private var thumbColor: Int = ContextCompat.getColor(context, R.color.default_thumb_color)
+    private var thumbOuterColor: Int = ContextCompat.getColor(context, android.R.color.white)
     private var startAngle = DEFAULT_START_ANGLE_DEG
     private var thumbDrawableId: Int = 0
 
@@ -157,6 +158,7 @@ class GaugeSeekBar : View {
             startAngle = attributes.getFloat(R.styleable.GaugeSeekBar_startAngleDegrees, startAngle)
             thumbRadius = attributes.getDimension(R.styleable.GaugeSeekBar_thumbRadius, thumbRadius)
             thumbColor = attributes.getColor(R.styleable.GaugeSeekBar_thumbColor, thumbColor)
+            thumbOuterColor = attributes.getColor(R.styleable.GaugeSeekBar_thumbOuterColor, thumbOuterColor)
             val trackGradientArrayId = attributes.getResourceId(R.styleable.GaugeSeekBar_trackGradient, 0)
             if (trackGradientArrayId != 0) {
                 trackGradientArray = resources.getIntArray(trackGradientArrayId)
@@ -239,7 +241,7 @@ class GaugeSeekBar : View {
         }
 
         if (showThumb) {
-            val thumbDrawable = if (thumbDrawableId != 0) ContextCompat.getDrawable(context, thumbDrawableId)!! else ThumbDrawable(thumbColor)
+            val thumbDrawable = if (thumbDrawableId != 0) ContextCompat.getDrawable(context, thumbDrawableId)!! else ThumbDrawable(thumbColor, thumbOuterColor)
             thumbEntity = ThumbEntity(centerPosition, progress, startAngle, thumbRadius, thumbDrawable)
         }
     }
