@@ -8,14 +8,14 @@ apply plugin: 'kotlin-android-extensions'
 apply from: 'dependencies.gradle'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 30
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 27
+        minSdkVersion 16
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
     buildTypes {
@@ -24,24 +24,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '27.0.1'
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.0"
 
-    androidTestCompile "org.mockito:mockito-android:2.8.47"
-    androidTestCompile("com.nhaarman:mockito-kotlin:1.5.0", {
+    androidTestImplementation "org.mockito:mockito-android:2.8.47"
+    androidTestImplementation("com.nhaarman:mockito-kotlin:1.5.0", {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'org.mockito'
     })
+    implementation 'com.airbnb.android:lottie:3.7.0'
+
 }
 
 repositories {
