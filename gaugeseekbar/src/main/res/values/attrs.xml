@@ -4,6 +4,7 @@
         <attr name="startAngleDegrees" format="float" />
         <attr name="thumbRadius" format="dimension" />
         <attr name="thumbDrawable" format="reference" />
+        <attr name="lottieDrawable" format="reference" />
         <attr name="showThumb" format="boolean" />
         <attr name="thumbColor" format="color" />
         <attr name="thumbOuterColor" format="color" />

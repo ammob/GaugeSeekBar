@@ -2,10 +2,10 @@ package com.tenclouds.gaugeprogressbar
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_animated_progress.*
 import kotlinx.android.synthetic.main.fragment_animated_progress.view.*
 
@@ -19,6 +19,9 @@ class FragmentAnimatedProgress : Fragment() {
             valueAnimator.duration = 1000
             valueAnimator.addUpdateListener {
                 progress.setProgress(it.animatedValue as Float)
+                if (it.animatedValue as Float >= 1) {
+                    progress.runCompleteAnimation()
+                }
             }
             valueAnimator.start()
         }

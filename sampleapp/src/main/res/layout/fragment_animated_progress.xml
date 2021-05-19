@@ -18,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:lottieDrawable="@raw/check"
         app:progress="0.75"
         app:progressGradient="@array/progressColor"
         app:thumbColor="@color/colorPrimary"

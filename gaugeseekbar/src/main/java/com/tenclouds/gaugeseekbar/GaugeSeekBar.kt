@@ -12,6 +12,8 @@ import android.view.View
 import androidx.annotation.DimenRes
 import androidx.annotation.FloatRange
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
 
 
 class GaugeSeekBar : View {
@@ -20,6 +22,8 @@ class GaugeSeekBar : View {
         private const val DEFAULT_START_ANGLE_DEG = 30f
         private const val DEFAULT_THUMB_RADIUS_DP = 11
         private const val DEFAULT_TRACK_WIDTH_DP = 8
+
+        private const val DEGREE_TO_RADIAN_RATIO = 0.0174533
     }
 
     constructor(context: Context) : super(context)
@@ -40,11 +44,14 @@ class GaugeSeekBar : View {
     private var thumbColor: Int = ContextCompat.getColor(context, R.color.default_thumb_color)
     private var thumbOuterColor: Int = ContextCompat.getColor(context, android.R.color.white)
     private var startAngle = DEFAULT_START_ANGLE_DEG
+    private var centerPosition = PointF(0f, 0f)
     private var thumbDrawableId: Int = 0
 
     private var trackDrawable: TrackDrawable? = null
     private var progressDrawable: ProgressDrawable? = null
     private var thumbEntity: ThumbEntity? = null
+    private var lottieDrawableId: Int = 0
+    private var lottieDrawable: LottieDrawable? = null
 
     private var showThumb: Boolean = true
     private var showProgress: Boolean = true
@@ -189,6 +196,7 @@ class GaugeSeekBar : View {
 
             interactive = attributes.getBoolean(R.styleable.GaugeSeekBar_interactive, interactive)
             thumbDrawableId = attributes.getResourceId(R.styleable.GaugeSeekBar_thumbDrawable, 0)
+            lottieDrawableId = attributes.getResourceId(R.styleable.GaugeSeekBar_lottieDrawable, 0)
             showProgress = attributes.getBoolean(R.styleable.GaugeSeekBar_showProgress, showProgress)
         } finally {
             attributes.recycle()
@@ -203,20 +211,20 @@ class GaugeSeekBar : View {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean =
-            if (interactive) {
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        performClick()
-                        handleMotionEvent(event)
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        handleMotionEvent(event)
-                    }
+        if (interactive) {
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    performClick()
+                    handleMotionEvent(event)
                 }
-                true
-            } else {
-                super.onTouchEvent(event)
+                MotionEvent.ACTION_MOVE -> {
+                    handleMotionEvent(event)
+                }
             }
+            true
+        } else {
+            super.onTouchEvent(event)
+        }
 
     private fun handleMotionEvent(event: MotionEvent) {
         val relativeX = measuredWidth / 2f - event.x
@@ -233,7 +241,7 @@ class GaugeSeekBar : View {
     }
 
     private fun init(centerX: Float, centerY: Float) {
-        val centerPosition = PointF(centerX, centerY)
+        centerPosition = PointF(centerX, centerY)
         val radiusPx = Math.min(centerX, centerY)
         val margin = Math.max(thumbRadius, trackWidth / 2f)
         trackDrawable = TrackDrawable(centerPosition, radiusPx, margin, trackGradientArray, startAngle, trackWidth)
@@ -245,6 +253,18 @@ class GaugeSeekBar : View {
         if (showThumb) {
             val bitmap = getBitmapFromVectorDrawable(context, thumbDrawableId)
             val thumbDrawable = ThumbDrawable(thumbColor, thumbOuterColor, bitmap)
+
+            if (lottieDrawableId > 0) {
+                lottieDrawable = LottieDrawable()
+                lottieDrawable?.let {
+                    it.enableMergePathsForKitKatAndAbove(true)
+                    it.callback = this
+                    val result = LottieCompositionFactory.fromRawResSync(context.applicationContext, lottieDrawableId)
+                    it.composition = result.value
+                    it.repeatCount = 0
+                    it.addAnimatorUpdateListener { invalidate() }
+                }
+            }
             thumbEntity = ThumbEntity(centerPosition, progress, startAngle, thumbRadius, thumbDrawable)
         }
     }
@@ -253,9 +273,32 @@ class GaugeSeekBar : View {
         canvas?.apply {
             trackDrawable?.draw(this)
             progressDrawable?.draw(this, progress)
-            thumbEntity?.draw(canvas, progress)
+            thumbEntity?.draw(this, progress)
+            if (lottieDrawableId > 0) {
+                canvas.updateCanvasPositionForLottie(progress)
+                lottieDrawable?.draw(this)
+            }
         }
     }
+
+    fun runCompleteAnimation() {
+        lottieDrawable?.start()
+    }
+
+    private fun Canvas.updateCanvasPositionForLottie(progress: Float) {
+        lottieDrawable?.let {
+            val seekbarRadius = Math.min(centerPosition.x, centerPosition.y) - thumbRadius
+
+            val angle = (startAngle + (360 - 2 * startAngle) * progress) * DEGREE_TO_RADIAN_RATIO
+
+            val indicatorX = centerPosition.x - Math.sin(angle) * seekbarRadius
+            val indicatorY = Math.cos(angle) * seekbarRadius + centerPosition.y
+
+            val lottiWidth = it.intrinsicWidth / 2
+            translate((indicatorX - lottiWidth).toFloat(), (indicatorY - lottiWidth).toFloat())
+        }
+    }
+
 
     private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap? {
         val drawable = if (drawableId != 0) ContextCompat.getDrawable(context, drawableId) else null
