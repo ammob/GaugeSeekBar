@@ -310,4 +310,9 @@ class GaugeSeekBar : View {
             bitmap
         }
     }
+
+    public fun updateProgressColor(colors: Int){
+        progressGradientArray = context.resources.getIntArray(colors)
+        init(measuredWidth / 2f, measuredHeight / 2f)
+    }
 }
