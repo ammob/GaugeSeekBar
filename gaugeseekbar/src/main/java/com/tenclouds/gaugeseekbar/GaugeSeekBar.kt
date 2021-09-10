@@ -315,4 +315,9 @@ class GaugeSeekBar : View {
         progressGradientArray = context.resources.getIntArray(colors)
         init(measuredWidth / 2f, measuredHeight / 2f)
     }
+    
+    public fun updateTrackColor(colors: Int){
+        trackGradientArray = context.resources.getIntArray(colors)
+        init(measuredWidth / 2f, measuredHeight / 2f)
+    }
 }
